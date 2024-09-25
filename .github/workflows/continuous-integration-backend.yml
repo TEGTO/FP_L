@@ -1,0 +1,57 @@
+name: Continuous Integration Backend
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "test/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.x"
+
+      - name: Cache .NET packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore src/FP_L.sln
+
+      - name: Build projects
+        run: dotnet build --configuration Release src/FP_L.sln
+
+      - name: Run unit tests
+        run: |
+          dotnet test src/FP_L.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ./TestResults
+
+      - name: Publish build artifacts
+        run: dotnet publish src/FP_L.sln --configuration Release --output ./output
+
+      - name: Archive artifact
+        run: zip -r build-artifact.zip ./output
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: build-artifact.zip
