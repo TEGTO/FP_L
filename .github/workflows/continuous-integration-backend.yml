@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -34,6 +34,15 @@ jobs:
       - name: Build projects
         run: dotnet build --configuration Release src/FP_L.sln
 
+      - name: Add SonarCloud
+        run: |
+          dotnet tool install --global dotnet-coverage
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin /k:"${{ secrets.SONAR_PROJECT_KEY }}" /o:"${{ secrets.SONAR_ORGANIZATION }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          dotnet build --configuration Release src/FP_L.sln
+          dotnet-coverage collect dotnet test -f xml  -o coverage.xml src/FP_L.sln
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
       - name: Run unit tests
         run: |
           dotnet test src/FP_L.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
@@ -48,7 +57,8 @@ jobs:
         run: dotnet publish src/FP_L.sln --configuration Release --output ./output
 
       - name: Archive artifact
-        run: zip -r build-artifact.zip ./output
+        run: |
+          Compress-Archive -Path ./output/* -DestinationPath build-artifact.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
