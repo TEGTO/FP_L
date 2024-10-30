@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  k6_constant_load_test: #json
+    image: grafana/k6:latest
+    environment:
+      - K6_CLOUD_TOKEN=${K6_CLOUD_TOKEN}
+    volumes:
+      - ./constant_load_test.js:/src/constant_load_test.js   
+      - ./results:/results                                   
+    # entrypoint: ["k6", "run", "/src/constant_load_test.js", "--out", "cloud"]
+    entrypoint: ["k6", "run", "/src/constant_load_test.js", "--out", "json=/results/constant_load_test.json"]
+    networks:
+      - fp_l-dev_fp_l-net
+
+  k6_ramping_load_test: #cloud
+    image: grafana/k6:latest
+    environment:
+      - K6_CLOUD_TOKEN=${K6_CLOUD_TOKEN}
+    volumes:
+      - ./ramping_load_test.js:/src/ramping_load_test.js   
+      - ./results:/results                                   
+    entrypoint: ["k6", "run", "/src/ramping_load_test.js", "--out", "cloud"]
+    # entrypoint: ["k6", "cloud", "/src/ramping_load_test.js"]
+    # entrypoint: ["k6", "run", "/src/ramping_load_test.js", "--out", "json=/results/ramping_load_test.json"]
+    networks:
+      - fp_l-dev_fp_l-net
+
+  k6_constant_arrival_rate_load_test: #json
+    image: grafana/k6:latest
+    environment:
+      - K6_CLOUD_TOKEN=${K6_CLOUD_TOKEN}
+    volumes:
+      - ./constant_arrival_rate_load_test.js:/src/constant_arrival_rate_load_test.js   
+      - ./results:/results                                   
+    # entrypoint: ["k6", "run", "/src/constant_arrival_rate_load_test.js", "--out", "cloud"]
+    entrypoint: ["k6", "run", "/src/constant_arrival_rate_load_test.js", "--out", "json=/results/constant_arrival_rate_load_test.json"]
+    networks:
+      - fp_l-dev_fp_l-net
+
+networks:
+  fp_l-dev_fp_l-net:
+    external: true

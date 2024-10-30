@@ -1,6 +1,6 @@
-﻿namespace FP_L.Domain.Product
+namespace FP_L
 {
-    public class ProductResponse
+    public class Product
     {
         public int Id { get; set; }
         public string Name { get; set; }

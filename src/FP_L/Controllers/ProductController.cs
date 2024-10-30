@@ -1,5 +1,3 @@
-using FP_L.Domain.Product;
-using FP_L.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FP_L.Controllers
@@ -8,7 +6,6 @@ namespace FP_L.Controllers
     [Route("products")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository productRepository;
         private readonly List<Product> products = new List<Product>
         {
             new Product { Id = 1, Name = "Laptop" },
@@ -17,31 +14,17 @@ namespace FP_L.Controllers
             new Product { Id = 4, Name = "Headphones" },
             new Product { Id = 5, Name = "Smartwatch" }
         };
+        private readonly ILogger<ProductController> logger;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(ILogger<ProductController> logger)
         {
-            this.productRepository = productRepository;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
         public ActionResult<ProductResponse> Get(int id)
         {
-            var product = products.FirstOrDefault(x => x.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            var response = new ProductResponse()
-            {
-                Id = id,
-                Name = id + " " + product.Name
-            };
-            return Ok(response);
-        }
-        [HttpGet("db/{id}")]
-        public ActionResult<ProductResponse> GetFromDb(int id)
-        {
-            var product = productRepository.GetProductById(id);
+            var product = products.Find(x => x.Id == id);
             if (product == null)
             {
                 return NotFound();

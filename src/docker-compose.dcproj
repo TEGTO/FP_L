@@ -4,11 +4,11 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>703f2d58-29d7-44f0-b22a-cb2203c08c2a</ProjectGuid>
+    <ProjectGuid>57fd3738-782a-4efe-9e93-0655c0189c64</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+	<DockerComposeProjectName>fp_l-dev</DockerComposeProjectName>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>fp_l</DockerServiceName>
-    <DockerComposeProjectName>fp_l-backend-dev</DockerComposeProjectName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
@@ -16,9 +16,5 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="grafana\provisioning\dashboards\dashboard.yml" />
-    <None Include="grafana\provisioning\dashboards\GrafPormAPIDashboard.json" />
-    <None Include="grafana\provisioning\datasources\prometheus_ds.yml" />
-    <None Include="prometheus\prometheus.yml" />
   </ItemGroup>
 </Project>

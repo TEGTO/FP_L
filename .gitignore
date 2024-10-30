@@ -484,3 +484,6 @@ $RECYCLE.BIN/
 *.swp
 
 .sonarqube
+test/k6/results/ramping_load_test.json
+test/k6/results/constant_load_test.json
+test/k6/results/constant_arrival_rate_load_test.json
