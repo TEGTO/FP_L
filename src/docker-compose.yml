@@ -1,18 +1,47 @@
-version: '3.4'
+version: '3.8'
 
 services:
   fp_l:
-    container_name: fp_l-api
     image: ${DOCKER_REGISTRY-}fpl
     build:
       context: .
       dockerfile: FP_L/Dockerfile
-    ports: 
-      - 8185:8080
+    deploy:
+      replicas: 3
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:8080;
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__RedisServer=${ConnectionStrings__RedisServer}
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
     networks:
     - fp_l-net
 
+  redis-node-1:
+    container_name: fp_l-redis-node-1
+    image: redis:latest
+    # command: ["redis-server", "/redis/redis.conf"]
+    # volumes:
+    #   - ./redis.conf:/redis/redis.conf
+    environment:
+        - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - fp_l-net
+
+  nginx:
+    restart: always
+    image: nginx:alpine
+    ports:
+        - 8185:80
+    volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - fp_l-net
+    depends_on:
+      - fp_l
+
 networks:
   fp_l-net:
-
-

@@ -6,15 +6,14 @@
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>57fd3738-782a-4efe-9e93-0655c0189c64</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-	<DockerComposeProjectName>fp_l-dev</DockerComposeProjectName>
+    <DockerComposeProjectName>fp_l-dev</DockerComposeProjectName>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>fp_l</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
+    <None Include=".env" />
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="nginx.conf" />
   </ItemGroup>
 </Project>

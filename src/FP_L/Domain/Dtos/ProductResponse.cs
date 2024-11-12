@@ -1,6 +1,6 @@
-namespace FP_L
+﻿namespace FP_L.Domain.Dtos
 {
-    public class Product
+    public class ProductResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }
